@@ -5,10 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Streamer;
 
 
 class SetupController extends Controller
 {
+    public function dashboard()
+    {
+        $streamers = Streamer::all();
+        return view('dashboard', compact('streamers'));
+    }
+
     public function index()
     {
         return view('setup.index');
