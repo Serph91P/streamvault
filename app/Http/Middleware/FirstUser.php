@@ -14,7 +14,7 @@ class FirstUser
         // Überprüfe, ob bereits Benutzer existieren
         if (User::count() == 0) {
             // Keine Benutzer vorhanden, leite zur Setup-Seite weiter
-            return redirect('/setup');
+            return redirect('/register');
         }
 
         return $next($request);
