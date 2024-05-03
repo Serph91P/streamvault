@@ -9,12 +9,15 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("You're logged in!") }}
+                    {{ __("Streamer Status") }}
                     <div class="mt-6">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900">Streamer Status</h3>
                         <div class="mt-4">
                             @forelse($streamers as $streamer)
-                            <p>{{ $streamer->name }} - {{ $streamer->stream_url }}</p>
+                            <p>
+                                <a href="{{ $streamer->stream_url }}" target="_blank" class="hover-link">
+                                    {{ $streamer->name }}
+                                </a>
+                            </p>
                             @empty
                             <p>No streamers found.</p>
                             @endforelse
@@ -27,4 +30,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-app-layout
