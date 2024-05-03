@@ -10,10 +10,10 @@ class StreamerController extends Controller
     /**
      * Zeige eine Liste aller Streamer.
      */
-    public function index()
+    public function dashboard()
     {
         $streamers = Streamer::all();
-        return view('streamers.index', compact('streamers'));
+        return view('dashboard', compact('streamers'));
     }
 
     /**
@@ -27,20 +27,23 @@ class StreamerController extends Controller
     /**
      * Speichere einen neu erstellten Streamer in der Datenbank.
      */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'stream_url' => 'required|url'
-        ]);
 
-        $streamer = new Streamer;
-        $streamer->name = $request->name;
-        $streamer->stream_url = $request->stream_url;
-        $streamer->save();
-
-        return redirect()->route('streamers.index');
-    }
+     public function store(Request $request)
+     {
+         $request->validate([
+             'name' => 'required|string|max:255',
+         ]);
+ 
+         $name = strtolower(trim($request->name));
+         $url = "https://twitch.tv/{$name}";
+ 
+         $streamer = new Streamer();
+         $streamer->name = $request->name;
+         $streamer->stream_url = $url;
+         $streamer->save();
+ 
+         return redirect()->route('dashboard');
+     }
 
     /**
      * Zeige die Daten eines spezifischen Streamers.
