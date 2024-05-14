@@ -2,12 +2,12 @@ FROM php:8.2-fpm
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
-    nginx \
     supervisor \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
     zip \
+    openssl \
     curl \
     unzip \
     procps \
@@ -71,11 +71,6 @@ RUN mkdir -p /opt/venv/share/streamlink/plugins && \
 RUN mkdir -p /recordings && \
     chown -R www-data:www-data /recordings && \
     chmod -R 775 /recordings
-
-# Nginx configuration
-COPY docker/nginx.conf /etc/nginx/sites-available/default
-RUN ln -sf /dev/stdout /var/log/nginx/access.log \
- && ln -sf /dev/stderr /var/log/nginx/error.log
 
 # PHP-FPM configuration adjustments
 RUN mkdir -p /var/log/php-fpm && chown www-data:www-data /var/log/php-fpm

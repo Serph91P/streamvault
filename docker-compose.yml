@@ -1,16 +1,18 @@
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: streamvault
     container_name: streamvault
     restart: unless-stopped
-    tty: true
     ports:
-      - "8080:80"
+      - "9000:9000"
+    tty: true
     environment:
       - APP_URL=https://twitch.mebert-server.de
       - DB_CONNECTION=mysql
-      - DB_HOST=db
+      - DB_HOST=streamvault_db
       - DB_PORT=3306
       - DB_DATABASE=mytwitchproject
       - DB_USERNAME=user
@@ -19,41 +21,52 @@ services:
       - TWITCH_CLIENT_ID=fx4xg7kx7fwksmm7qxgi3cux496lp3
       - TWITCH_CLIENT_SECRET=ml9ilsxy7xmcjtdbb6r2slddd1xxy4
       - LOG_CHANNEL=stderr
-      - TRUSTED_PROXIES=192.168.178.77
+      - REVERB_SCALING_ENABLED=true
     volumes:
       - ./:/var/www
       - ./recordings:/var/www/storage/app/recordings
     networks:
-      - app-network
+      - streamvault-network
     depends_on:
-      - db
-      - redis
+      - streamvault_db
+      - streamvault_redis
 
-  redis:
+  nginx:
+    image: nginx:latest
+    container_name: nginx_proxy
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - streamvault-network
+    depends_on:
+      - app
+
+  streamvault_redis:
     image: redis:alpine
     container_name: streamvault_redis
     networks:
-      - app-network
+      - streamvault-network
 
-
-  db:
+  streamvault_db:
     image: mariadb:10.5
     container_name: streamvault_db
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: mytwitchproject
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: rootpassword
+      MARIADB_DATABASE: mytwitchproject
+      MARIADB_USER: user
+      MARIADB_PASSWORD: password
+      MARIADB_ROOT_PASSWORD: rootpassword
     volumes:
-      - dbdata:/var/lib/mysql
-      - .docker/mysql-init.sql:/docker-entrypoint-initdb.d/init.sql
+      - streamvault-dbdata:/var/lib/mysql
     networks:
-      - app-network
+      - streamvault-network
 
 volumes:
-  dbdata:
+  streamvault-dbdata:
 
 networks:
-  app-network:
+  streamvault-network:
     driver: bridge

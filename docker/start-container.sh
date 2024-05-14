@@ -51,9 +51,6 @@ set_env_var() {
 # set_env_var "VITE_REVERB_SCHEME" "https"
 # set_env_var "VITE_REVERB_PATH" "/ws"
 
-# Update Nginx configuration with APP_URL
-sed -i "s/\$APP_URL/$APP_URL/" /etc/nginx/conf.d/default.conf
-
 # Other required settings
 set_env_var "REDIS_HOST" "streamvault_redis"
 set_env_var "REDIS_PASSWORD" "null"
@@ -96,9 +93,10 @@ php artisan migrate --force
 mkdir -p /var/log/reverb
 chown www-data:www-data /var/log/reverb
 
+echo "Running npm build..."
+npm run build
+
 # Start supervisord
 echo "Starting supervisord..."
 supervisord -c /etc/supervisor/supervisord.conf
 
-echo "Running npm build..."
-npm run build
