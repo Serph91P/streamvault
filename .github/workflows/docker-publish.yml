@@ -34,6 +34,4 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/streamvault:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/streamvault:develop
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/streamvault:${{ github.ref_name == 'refs/heads/main' && 'latest' || 'develop' }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/streamvault:${{ github.ref == 'refs/heads/main' && 'latest' || 'develop' }}
